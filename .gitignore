@@ -27,3 +27,26 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+src/java/
+*.jar
+*.class
+.vscode/
+bin/
+candidate_pool.csv
+src/java/
+lib/
+bin/
+*.jar
+*.class
+.idea/
+*.iml
+candidate_pool.csv

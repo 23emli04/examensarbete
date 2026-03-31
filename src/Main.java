@@ -1,14 +1,21 @@
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import java.io.IOException;
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
-
-        for (int i = 1; i <= 5; i++) {
-
-            System.out.println("i = " + i);
+        int antalKandidater = 100;
+        int antalKompetenser = 5;
+        List<Candidate> pool = DataSetSynthesizer.generatePool(antalKandidater, antalKompetenser);
+        
+        FileCreator csvCreator = new CsvFileCreator("candidate_pool");
+        
+        try {
+            csvCreator.writeToFile(pool);
+            System.out.println("Success! Filen sparad som: " + csvCreator.getFilename());
+        } catch (IOException e) {
+            System.err.println("Kunde inte skriva till filen: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Ett oväntat fel uppstod: " + e.getMessage());
         }
     }
 }
