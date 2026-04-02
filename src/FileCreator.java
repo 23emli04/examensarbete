@@ -9,7 +9,7 @@ public abstract class FileCreator {
         this.filename = filename;
     }
 
-    public abstract void writeToFile(List<Candidate> pool) throws IOException;
+    public abstract void writeToFile(List<Person> pool) throws IOException;
 
     public void setFileName(String filename) {
         this.filename = filename;

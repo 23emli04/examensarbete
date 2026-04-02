@@ -2,41 +2,41 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class CsvFileCreator extends FileCreator {
     private final Locale swedishLocale = new Locale("sv", "SE");
+
     public CsvFileCreator(String filename) {
         super(filename + ".csv");
     }
 
-   @Override
-public void writeToFile(List<Candidate> pool) throws IOException {
-    if (pool == null || pool.isEmpty()) return;
+    @Override
+    public void writeToFile(List<Person> pool) throws IOException {
+        if (pool == null || pool.isEmpty())
+            return;
 
-    try (FileWriter writer = new FileWriter(getFilename())) {
-
-        StringBuilder header = new StringBuilder("ID; Workload");
-        int numSkills = pool.get(0).getSkills().length;
-        for (int i = 1; i <= numSkills; i++) {
-            header.append(";Skill_").append(i);
-        }
-        writer.write(header.append("\n").toString());
-
-        for (Candidate c : pool) {
-            StringBuilder sb = new StringBuilder();
-
-            sb.append(c.getId()).append(";")
-              .append(String.format(swedishLocale, "%.4f", c.getWorkload())).append(";");
-
-            double[] skills = c.getSkills();
-            for (int i = 0; i < skills.length; i++) {
-                sb.append(String.format(swedishLocale, "%.4f", skills[i]));
-                if (i < skills.length - 1) sb.append(";");
+        try (FileWriter writer = new FileWriter(getFilename())) {
+            StringBuilder header = new StringBuilder("ID;Workload");
+            for (Skills skill : Skills.values()) {
+                header.append(";").append(skill.name());
             }
+            writer.write(header.append("\n").toString());
+            for (Person p : pool) {
+                StringBuilder sb = new StringBuilder();
 
-            sb.append("\n");
-            writer.write(sb.toString());
+                sb.append(p.getId()).append(";")
+                  .append(String.format(swedishLocale, "%.4f", p.getWorkload()));
+                  
+                Map<Skills, Double> personSkills = p.getSkills();
+                for (Skills s : Skills.values()) {
+                    double level = personSkills.getOrDefault(s, 0.0);
+                    sb.append(";").append(String.format(swedishLocale, "%.4f", level));
+                }
+
+                sb.append("\n");
+                writer.write(sb.toString());
+            }
         }
     }
-}
 }
