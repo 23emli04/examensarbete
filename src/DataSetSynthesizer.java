@@ -14,7 +14,7 @@ public class DataSetSynthesizer {
             Map<Skills, Double> skillMap = new EnumMap<>(Skills.class);
             
             for (Skills s : Skills.values()) {
-                double skillLevel = Math.max(0, Math.min(1, 0.1 + random.nextGaussian() * 0.1));
+                double skillLevel = Math.max(0, Math.min(1, 0.5 + random.nextGaussian() * 0.1));
                 skillMap.put(s, skillLevel);
             }
             
