@@ -10,6 +10,7 @@ public class Main {
         double alpha = 2;
         double beta = 1;
         boolean generateNewPool = false;
+
         List<Person> pool;
 
         if (generateNewPool) {
