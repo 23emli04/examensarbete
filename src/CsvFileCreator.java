@@ -39,4 +39,18 @@ public class CsvFileCreator extends FileCreator {
             }
         }
     }
+
+    public void writeResults(int poolsize, int teamSize, double alpha, double beta, double esComp, double esWork, double gComp, double gWork, double esTime, double greedyTime,double greedyScore,double esScore,double approx) throws IOException {
+        try (FileWriter writer = new FileWriter(getFilename(), true)) {
+            String line = String.format(swedishLocale, "%d;%d;%.1f;%.1f;%.4f;%.4f;%.4f;%.4f;%2f;%2f;%2f;%2f;%2f\n",
+                    poolsize, teamSize, alpha, beta, esComp, esWork, gComp, gWork, esTime, greedyTime, greedyScore, esScore,approx);
+            writer.write(line);
+        }
+    }
+
+    public void writeResultHeader() throws IOException {
+        try (FileWriter writer = new FileWriter(getFilename())) {
+            writer.write("Poolsize;Teamsize;Alpha;Beta;ES_Comp;ES_Work;Greedy_Comp;Greedy_Work;Es_Time;Greedy_time;Greedy_score;Es_Score;Approx;\n");
+        }
+    }
 }

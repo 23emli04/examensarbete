@@ -26,11 +26,7 @@ public class Person {
         @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Person ID: ").append(id).append(", Workload: ").append(String.format("%.4f", workload)).append(", Skills: {");
-        for (Map.Entry<Skills, Double> entry : skills.entrySet()) {
-            sb.append(entry.getKey().name()).append(": ").append(String.format("%.4f", entry.getValue())).append(", ");
-        }
-        sb.append("}");
+        sb.append("Person ID: ").append(id);
         return sb.toString();
     }
 }

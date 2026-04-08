@@ -1,71 +1,50 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class ExhaustiveSearch implements Algorithm {
     private List<Person> bestTeam;
-    private double maxScore = Double.NEGATIVE_INFINITY;
+    private double bestScore = Double.NEGATIVE_INFINITY;
+    private ScoringFunction scoringFunction;
+
+    public ExhaustiveSearch() {
+        this.scoringFunction = new ScoringFunction();
+    }
 
     @Override
     public void Compute(Task task, List<Person> pool, double alpha, double beta) {
-        bestTeam = new ArrayList<>();
-        maxScore = Double.NEGATIVE_INFINITY;
-        int k = task.getTeamSize();
-        generateCombinations(pool, new ArrayList<>(), 0, k, task, alpha, beta);
-        
-        System.out.println("Exhaustive Search klar. Bästa score: " + maxScore);
+        this.bestScore = Double.NEGATIVE_INFINITY;
+        this.bestTeam = null;
+        generateAndEvaluate(pool, task.getTeamSize(), 0, new ArrayList<>(), task, alpha, beta);
     }
 
-    private void generateCombinations(List<Person> pool, List<Person> currentTeam, 
-                                      int start, int k, Task task, double alpha, double beta) {
-        if (currentTeam.size() == k) {
-            evaluateTeam(currentTeam, task, alpha, beta);
+    private void generateAndEvaluate(List<Person> pool, int teamSize, int start, List<Person> current, Task task, double alpha, double beta) {
+        if (current.size() == teamSize) {
+            double score = calculateScore(current, task, alpha, beta);
+            if (score > bestScore) {
+                bestScore = score;
+                bestTeam = new ArrayList<>(current);
+            }
             return;
         }
         for (int i = start; i < pool.size(); i++) {
-            currentTeam.add(pool.get(i));
-            generateCombinations(pool, currentTeam, i + 1, k, task, alpha, beta);
-            currentTeam.remove(currentTeam.size() - 1); 
+            current.add(pool.get(i));
+            generateAndEvaluate(pool, teamSize, i + 1, current, task, alpha, beta);
+            current.remove(current.size() - 1);
         }
     }
-
-    private void evaluateTeam(List<Person> team, Task task, double alpha, double beta) {
-        double coverage = calculateCoverage(team, task);
-        double maxWorkload = calculateMaxWorkload(team);
-        System.err.println(" | Coverage: " + String.format("%.4f", coverage) + 
-                           " | Max Workload: " + String.format("%.4f", maxWorkload));
-        double score = (beta * coverage) - (alpha * maxWorkload);
-
-        if (score > maxScore) {
-            maxScore = score;
-            bestTeam = new ArrayList<>(team);
-        }
-    }
-public double calculateCoverage(List<Person> team, Task task) {
-    double totalCoverage = 0;
-    for (Map.Entry<Skills, Double> entry : task.getRequiredSkills().entrySet()) {
-        Skills skill = entry.getKey();
-        double required = entry.getValue(); // t.ex. 0.8
-        
-        double teamSum = 0;
-        for (Person p : team) {
-            teamSum += p.getSkills().getOrDefault(skill, 0.0);
-        }
-        
-        double skillCoverage = Math.min(teamSum, required) / required; 
-        totalCoverage += skillCoverage;
-    }
-    return totalCoverage / task.getRequiredSkills().size();
-}
-
-    private double calculateMaxWorkload(List<Person> team) {
-        return team.stream()
-                   .mapToDouble(Person::getWorkload)
-                   .max()
-                   .orElse(0.0);
-    }
-
     public List<Person> getBestTeam() {
         return bestTeam;
     }
+    public double getBestScore() {
+        return bestScore;
+    }
+    private double calculateScore(List<Person> team, Task task, double alpha, double beta) {
+        double score;
+        score = beta * scoringFunction.competenceSum(team, task) - alpha * scoringFunction.workloadMax(team);
+        return score;
+
+        }
+
+  
+
 }
