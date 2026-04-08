@@ -17,26 +17,22 @@ public class ExhaustiveSearch implements Algorithm {
     @Override
     public void Compute(Task task, List<Person> pool, double alpha, double beta)
      {
-        List<List<Person>> allTeams = generateTeams(pool, task.getTeamSize());
-                System.err.println("Generated " + allTeams.size() + " teams for evaluation.");
+         List<List<Person>> allTeams = new ArrayList<>();
+         generateTeams(pool, task.getTeamSize(), 0, new ArrayList<>(), allTeams);
+         System.out.println("Generated");
         evaluateTeams(allTeams, task, alpha, beta);
     }
 
-    private List<List<Person>> generateTeams(List<Person> pool, int teamSize) {
-        List<List<Person>> allTeams = new ArrayList<>();
-        int n = pool.size();
-        for (int i = 0; i < (1 << n); i++) {
-            List<Person> team = new ArrayList<>();
-            for (int j = 0; j < n; j++) {
-                if ((i & (1 << j)) != 0) {
-                    team.add(pool.get(j));
-                }
-            }
-            if (team.size() == teamSize) {
-                allTeams.add(team);
-            }
+    private void generateTeams(List<Person> pool, int teamSize, int start, List<Person> current, List<List<Person>> allTeams) {
+        if (current.size() == teamSize) {
+            allTeams.add(new ArrayList<>(current));
+            return;
         }
-        return allTeams;
+        for (int i = start; i < pool.size(); i++) {
+            current.add(pool.get(i));
+            generateTeams(pool, teamSize, i + 1, current, allTeams);
+            current.remove(current.size() - 1);
+        }
     }
 
     private void evaluateTeams(List<List<Person>> allTeams, Task task, double alpha, double beta) {

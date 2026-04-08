@@ -9,15 +9,15 @@ public class DataSetSynthesizer {
 
     public static List<Person> generatePool(int size) {
         List<Person> pool = new ArrayList<>();
-        
+
         for (int i = 0; i < size; i++) {
             Map<Skills, Double> skillMap = new EnumMap<>(Skills.class);
-            
+
             for (Skills s : Skills.values()) {
                 double skillLevel = Math.max(0, Math.min(1, 0.5 + random.nextGaussian() * 0.1));
                 skillMap.put(s, skillLevel);
             }
-            
+
             double workload = Math.max(0, Math.min(1, 0.5 + random.nextGaussian() * 0.2));
                         pool.add(new Person(i, skillMap, workload));
         }

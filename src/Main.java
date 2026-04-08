@@ -5,11 +5,11 @@ import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
-        int antalKandidater = 23;
+        int antalKandidater = 50;
         int teamSize = 5;
-        double alpha = 0.0;
-        double beta = 0.5;
-        boolean generateNewPool = true;
+        double alpha = 2;
+        double beta = 1;
+        boolean generateNewPool = false;
         List<Person> pool;
 
         if (generateNewPool) {
