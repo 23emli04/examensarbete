@@ -20,4 +20,29 @@ public class DataSetSynthesizer {
         }
         return pool;
     }
+    public static List<Person> generateExponentialPool(int size, double lambda) {
+        List<Person> pool = new ArrayList<>();
+
+        for (int i = 0; i < size; i++) {
+            Map<Skills, Double> skillMap = new EnumMap<>(Skills.class);
+
+            for (Skills s : Skills.values()) {
+                // Generera exponentialfördelat värde: -ln(1-u) / lambda
+                double rawValue = -Math.log(1 - random.nextDouble()) / lambda;
+
+                // Clampa värdet till max 1.0 då din modell kräver p_jf ∈ [0,1] [cite: 124]
+                double skillLevel = Math.min(1.0, rawValue);
+                skillMap.put(s, skillLevel);
+            }
+
+            // Generera arbetsbelastning (workload)
+            // Kan också vara exponentialfördelad för att simulera ojämn belastning [cite: 134, 149]
+            double rawWorkload = -Math.log(1 - random.nextDouble()) / lambda;
+            double workload = Math.min(1.0, rawWorkload);
+
+            pool.add(new Person(i, skillMap, workload));
+        }
+        return pool;
+    }
+
 }
